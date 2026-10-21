@@ -57,11 +57,12 @@
             <artifactId>spring-boot-starter-webmvc</artifactId>
         </dependency>
 
-        <!-- Ollama Cloud Chat via OpenAI-compatible API -->
+        <!-- Gemini chat model -->
         <dependency>
             <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-starter-model-openai</artifactId>
+            <artifactId>spring-ai-starter-model-google-genai</artifactId>
         </dependency>
+
 
         <!-- Gemini embeddings for repository indexing -->
         <dependency>
