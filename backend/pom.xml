@@ -70,7 +70,6 @@
             <artifactId>spring-ai-starter-model-google-genai-embedding</artifactId>
         </dependency>
 
-        <!-- Keep Ollama starter for existing embedding integration -->
         
 
         <!-- PostgreSQL Vector Store -->
