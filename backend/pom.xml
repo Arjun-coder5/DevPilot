@@ -65,10 +65,7 @@
         </dependency>
 
         <!-- Keep Ollama starter for existing embedding integration -->
-        <dependency>
-            <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-starter-model-ollama</artifactId>
-        </dependency>
+        
 
         <!-- PostgreSQL Vector Store -->
         <dependency>
