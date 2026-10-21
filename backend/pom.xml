@@ -63,6 +63,12 @@
             <artifactId>spring-ai-starter-model-openai</artifactId>
         </dependency>
 
+        <!-- Gemini embeddings for repository indexing -->
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-starter-model-google-genai-embedding</artifactId>
+        </dependency>
+
         <!-- Keep Ollama starter for existing embedding integration -->
         
 
