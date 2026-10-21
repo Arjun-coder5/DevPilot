@@ -70,6 +70,18 @@ export async function streamChatMessage(
       const data = dataLines.join("\n");
       if (!data) continue;
 
+      // Surface backend/model failures rather than treating a closed stream as success.
+      if (event === "chat_error") {
+        let message = "Chat generation failed. Check the backend logs for details.";
+        try {
+          const payload = JSON.parse(data) as { message?: string };
+          if (payload.message) message = payload.message;
+        } catch {
+          // Keep the generic message if the event payload is not JSON.
+        }
+        throw new Error(message);
+      }
+
       try {
         if (event === "token") {
           handlers.onToken?.(JSON.parse(data) as string);
