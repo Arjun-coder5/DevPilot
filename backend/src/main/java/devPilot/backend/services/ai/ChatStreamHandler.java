@@ -51,16 +51,12 @@ public class ChatStreamHandler {
                     .user(userPrompt)
                     .stream()
                     .content()
-                    .doOnNext(token -> appendToken(emitter, fullReply, token))
-                    .doOnError(err -> {
-                        log.error("Chat stream error", err);
-                        emitter.completeWithError(err);
-                    })
-                    .doOnComplete(() -> completeStream(
-                            emitter, sessionId, fullReply, citations))
-                    .subscribe();
+                    .subscribe(
+                            token -> appendToken(emitter, fullReply, token),
+                            err -> failStream(emitter, err),
+                            () -> completeStream(emitter, sessionId, fullReply, citations));
         } catch (Exception ex) {
-            emitter.completeWithError(ex);
+            failStream(emitter, ex);
         }
 
         return emitter;
@@ -74,6 +70,29 @@ public class ChatStreamHandler {
                     .data(token, MediaType.APPLICATION_JSON));
         } catch (Exception ex) {
             throw new IllegalStateException(ex);
+        }
+    }
+
+    private void failStream(SseEmitter emitter, Throwable error) {
+        log.error("Chat stream error", error);
+
+        String message = error.getMessage();
+        if (message == null || message.isBlank()) {
+            message = error.getClass().getSimpleName();
+        }
+        if (message.length() > 400) {
+            message = message.substring(0, 400);
+        }
+
+        try {
+            emitter.send(SseEmitter.event()
+                    .name("chat_error")
+                    .data(java.util.Map.of("message", "Chat generation failed: " + message),
+                            MediaType.APPLICATION_JSON));
+            emitter.complete();
+        } catch (Exception sendError) {
+            log.warn("Could not send chat error event to client", sendError);
+            emitter.completeWithError(error);
         }
     }
 
@@ -96,7 +115,7 @@ public class ChatStreamHandler {
             emitter.send(SseEmitter.event().name("done").data("[DONE]"));
             emitter.complete();
         } catch (Exception ex) {
-            emitter.completeWithError(ex);
+            failStream(emitter, ex);
         }
     }
 
