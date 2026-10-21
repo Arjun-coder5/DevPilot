@@ -44,6 +44,7 @@ public class SecurityConfig {
                                 "/error")
                         .permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers("/api/health").permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll())
                 .exceptionHandling(ex -> ex
@@ -55,8 +56,8 @@ public class SecurityConfig {
                         .failureHandler(oauth2FailureHandler))
                 .logout(logout -> logout
                         .logoutUrl("/api/auth/logout")
-                        .logoutSuccessHandler((request, response, authentication) ->
-                                response.setStatus(HttpStatus.NO_CONTENT.value()))
+                        .logoutSuccessHandler((request, response, authentication)
+                                -> response.setStatus(HttpStatus.NO_CONTENT.value()))
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
                         .deleteCookies("DEVPILOT_SESSION"));
